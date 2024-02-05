@@ -242,6 +242,10 @@ def context(
     additional_context_args = context_args_marker.kwargs if context_args_marker else {}
     browser_context_args.update(additional_context_args)
 
+    load_storage_path = pytestconfig.getoption("--load-storage")
+    if load_storage_path:
+        browser_context_args["storage_state"] = load_storage_path
+
     context = browser.new_context(**browser_context_args)
     context.on("page", lambda page: pages.append(page))
 
@@ -416,4 +420,8 @@ def pytest_addoption(parser: Any) -> None:
         action="store_true",
         default=False,
         help="Whether to take a full page screenshot",
+    )
+    group.addoption(
+        "--load-storage",
+        default=None,
     )
